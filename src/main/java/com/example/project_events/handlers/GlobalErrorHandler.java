@@ -1,6 +1,6 @@
 package com.example.project_events.handlers;
 
-import com.example.project_events.errors.InvalidCredentialsException;
+import com.example.project_events.errors.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +27,41 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<?> handlerInvalidCredentialsException(InvalidCredentialsException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UuidNotFoundException.class)
+    public ResponseEntity<?> handlerUuidNotFoundException(UuidNotFoundException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handlerUserNotFoundException(UserNotFoundException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<?> handlerInvalidDateException(InvalidDateException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<?> handlerEventNotFoundException(EventNotFoundException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handlerUnauthorizedException(UnauthorizedException e){
         Map<String, String> response = new HashMap<>();
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
