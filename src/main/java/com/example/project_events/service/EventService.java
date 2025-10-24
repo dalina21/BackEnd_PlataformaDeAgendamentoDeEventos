@@ -1,6 +1,7 @@
 package com.example.project_events.service;
 
 import com.example.project_events.dto.RegisterEventDTO;
+import com.example.project_events.dto.ResponseEventDTO;
 import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.errors.EventNotFoundException;
 import com.example.project_events.errors.InvalidDateException;
@@ -84,7 +85,7 @@ public class EventService {
         eventRepository.delete(event.get());
     }
 
-    public Event findEventById(UUID uuid, Long idEvent){
+    public ResponseEventDTO findEventById(UUID uuid, Long idEvent){
         Optional<Event> event = eventRepository.findById(idEvent);
         if (!organizerRepository.existsByUuid(uuid)){
             throw new UuidNotFoundException("UUID não encontrado");
@@ -95,10 +96,17 @@ public class EventService {
         if(!event.get().getOrganizer().getUuid().equals(uuid)){
             throw new UnauthorizedException("Este organizador não tem permissão para visualizar esse evento!");
         }
-        return event.get();
+        return new ResponseEventDTO(
+                event.get().getName(),
+                event.get().getDescription(),
+                event.get().getEventDate(),
+                event.get().getLimitParticipants(),
+                event.get().getAmountOfSubscribers(),
+                event.get().getStatus()
+        );
     }
 
-    public List<Event> findAllEventsByOrganizer(UUID uuid){
+    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuid){
         List<Event> events = eventRepository.findAllByOrganizerUuid(uuid);
         if (!organizerRepository.existsByUuid(uuid)){
             throw new UuidNotFoundException("UUID não encontrado");
@@ -106,16 +114,49 @@ public class EventService {
         if(events.isEmpty()){
             throw new EventNotFoundException("Nenhum evento foi encontrado!");
         }
-        return events;
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
     }
 
-    public List<Event> findAllEvents(){
+    public List<ResponseEventDTO> findEventsStatusByOrganizer(UUID uuid, StatusEventEnum status){
+        List<Event> events = eventRepository.findAllByOrganizerUuidAndStatus(uuid, status);
+        if (!organizerRepository.existsByUuid(uuid)){
+            throw new UuidNotFoundException("UUID não encontrado");
+        }
+        if(events.isEmpty()){
+            throw new EventNotFoundException("Nenhum evento foi encontrado!");
+        }
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
+    }
+
+    public List<ResponseEventDTO> findAllEvents(){
         List<Event> events = eventRepository.findAll();
         if(events.isEmpty()){
             throw new EventNotFoundException("Nenhum evento encontrado!");
         }
-        return events;
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
     }
-
-
 }

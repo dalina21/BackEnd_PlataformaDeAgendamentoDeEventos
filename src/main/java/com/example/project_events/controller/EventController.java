@@ -1,6 +1,8 @@
 package com.example.project_events.controller;
 
 import com.example.project_events.dto.RegisterEventDTO;
+import com.example.project_events.dto.ResponseEventDTO;
+import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.facade.EventFacade;
 import com.example.project_events.model.Event;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +51,7 @@ public class EventController {
     @Operation(summary = "Retorna todos os registros de eventos")
     @GetMapping("/find-all")
     public ResponseEntity<?> findAllEvents(){
-        Map<String, List<Event>> response = new HashMap<>();
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
         response.put("events", eventFacade.findAllEvents());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -57,16 +59,24 @@ public class EventController {
     @Operation(summary = "Retorna um evento especifico")
     @GetMapping("/{uuid}/{idEvent}/find-by-id")
     public ResponseEntity<?> findEventById(@PathVariable UUID uuid, @PathVariable Long idEvent){
-        Map<String, Event> response = new HashMap<>();
+        Map<String, ResponseEventDTO> response = new HashMap<>();
         response.put("event", eventFacade.findEventById(uuid, idEvent));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Retorna todos os registros de eventos criados por um determinado organizador")
     @GetMapping("/{uuid}/find-by-organizer")
-    public ResponseEntity<?> findAllEventsByOrganizer(@PathVariable UUID uuid, @PathVariable Long idEvent){
-        Map<String, List<Event>> response = new HashMap<>();
+    public ResponseEntity<?> findAllEventsByOrganizer(@PathVariable UUID uuid){
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
         response.put("events", eventFacade.findAllEventsByOrganizer(uuid));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retorna todos os registros de eventos filtrados pelo status")
+    @GetMapping("/{uuid}/find-by-status")
+    public ResponseEntity<?> findEventsStatusByOrganizer(@PathVariable UUID uuid, @RequestParam StatusEventEnum status){
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
+        response.put("events", eventFacade.findEventsStatusByOrganizer(uuid, status));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
