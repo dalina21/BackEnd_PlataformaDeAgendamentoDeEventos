@@ -1,5 +1,6 @@
 package com.example.project_events.repository;
 
+import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,5 @@ public interface EventRepository extends JpaRepository<Event, Long>{
     void delete(Event event);
     List<Event> findAll();
     List<Event> findAllByOrganizerUuid(UUID uuid);
+    List<Event> findAllByOrganizerUuidAndStatus(UUID uuid, StatusEventEnum status);
 }

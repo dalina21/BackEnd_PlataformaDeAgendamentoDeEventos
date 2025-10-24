@@ -1,6 +1,8 @@
 package com.example.project_events.facade;
 
 import com.example.project_events.dto.RegisterEventDTO;
+import com.example.project_events.dto.ResponseEventDTO;
+import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.model.Event;
 import com.example.project_events.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +29,19 @@ public class EventFacade {
         eventService.deleteEvent(uuid, idEvent);
     }
 
-    public Event findEventById(UUID uuid, Long idEvent){
+    public ResponseEventDTO findEventById(UUID uuid, Long idEvent){
         return eventService.findEventById(uuid, idEvent);
     }
 
-    public List<Event> findAllEvents(){
+    public List<ResponseEventDTO> findAllEvents(){
         return eventService.findAllEvents();
     }
 
-    public List<Event> findAllEventsByOrganizer(UUID uuid){
+    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuid){
         return eventService.findAllEventsByOrganizer(uuid);
+    }
+
+    public List<ResponseEventDTO> findEventsStatusByOrganizer(UUID uuid, StatusEventEnum status){
+        return eventService.findEventsStatusByOrganizer(uuid, status);
     }
 }
