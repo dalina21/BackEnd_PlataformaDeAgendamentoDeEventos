@@ -1,0 +1,37 @@
+package com.example.project_events.controller;
+
+import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.facade.UserFacade;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/participant")
+@RequiredArgsConstructor
+public class ParticipantController {
+
+    private final UserFacade userFacade;
+
+    @GetMapping("/{uuid}/informations")
+    public ResponseEntity<?> participantInformation(@PathVariable UUID uuid){
+        Map<String, ResponseUserDTO> response = new HashMap<>();
+        response.put("participant", userFacade.participantInformation(uuid));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{uuid}/update")
+    public ResponseEntity<?> updateParticipantInformation(@PathVariable UUID uuid, @RequestBody @Valid UpdateUserDTO updateUserDTO){
+        userFacade.updateParticipantInformations(uuid, updateUserDTO);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Participante atualizado com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+}

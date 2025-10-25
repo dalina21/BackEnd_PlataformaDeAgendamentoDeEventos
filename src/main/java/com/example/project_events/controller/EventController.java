@@ -72,11 +72,11 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retorna todos os registros de eventos filtrados pelo status")
+    @Operation(summary = "Retorna todos os registros de eventos de um organizador especifico filtrados pelo status")
     @GetMapping("/{uuid}/find-by-status")
     public ResponseEntity<?> findEventsStatusByOrganizer(@PathVariable UUID uuid, @RequestParam StatusEventEnum status){
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
-        response.put("events", eventFacade.findEventsStatusByOrganizer(uuid, status));
+        response.put("events", eventFacade.findEventsByOrganizerUuidAndStatus(uuid, status));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

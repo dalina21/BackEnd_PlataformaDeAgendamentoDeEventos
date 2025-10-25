@@ -41,7 +41,7 @@ public class EventFacade {
         return eventService.findAllEventsByOrganizer(uuid);
     }
 
-    public List<ResponseEventDTO> findEventsStatusByOrganizer(UUID uuid, StatusEventEnum status){
-        return eventService.findEventsStatusByOrganizer(uuid, status);
+    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuid, StatusEventEnum status){
+        return eventService.findEventsByOrganizerUuidAndStatus(uuid, status);
     }
 }
