@@ -125,7 +125,7 @@ public class EventService {
                 )).toList();
     }
 
-    public List<ResponseEventDTO> findEventsStatusByOrganizer(UUID uuid, StatusEventEnum status){
+    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuid, StatusEventEnum status){
         List<Event> events = eventRepository.findAllByOrganizerUuidAndStatus(uuid, status);
         if (!organizerRepository.existsByUuid(uuid)){
             throw new UuidNotFoundException("UUID não encontrado");

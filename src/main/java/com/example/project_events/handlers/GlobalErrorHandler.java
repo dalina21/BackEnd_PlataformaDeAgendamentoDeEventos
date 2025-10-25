@@ -66,4 +66,11 @@ public class GlobalErrorHandler {
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(EmailExistingException.class)
+    public ResponseEntity<?> handlerEmailExistingException(EmailExistingException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }
