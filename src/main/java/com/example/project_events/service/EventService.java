@@ -3,14 +3,13 @@ package com.example.project_events.service;
 import com.example.project_events.dto.RegisterEventDTO;
 import com.example.project_events.dto.ResponseEventDTO;
 import com.example.project_events.enums.StatusEventEnum;
-import com.example.project_events.errors.EventNotFoundException;
-import com.example.project_events.errors.InvalidDateException;
-import com.example.project_events.errors.UnauthorizedException;
-import com.example.project_events.errors.UuidNotFoundException;
+import com.example.project_events.errors.*;
 import com.example.project_events.model.Event;
 import com.example.project_events.model.Organizer;
+import com.example.project_events.model.Participant;
 import com.example.project_events.repository.EventRepository;
 import com.example.project_events.repository.OrganizerRepository;
+import com.example.project_events.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,10 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final OrganizerRepository organizerRepository;
+    private final ParticipantRepository participantRepository;
 
-    public void registerEvent(UUID uuid, RegisterEventDTO registerEventDTO){
-        Optional<Organizer> organizer = organizerRepository.findByUuid(uuid);
+    public void registerEvent(UUID uuidOrganizer, RegisterEventDTO registerEventDTO){
+        Optional<Organizer> organizer = organizerRepository.findByUuid(uuidOrganizer);
 
         if (organizer.isEmpty()){
             throw new UuidNotFoundException("Uuid do organizador não encontrado!");
@@ -46,16 +46,16 @@ public class EventService {
         eventRepository.save(newEvent);
     }
 
-    public void updateEvent(UUID uuid, long idEvent, RegisterEventDTO registerEventDTO){
+    public void updateEvent(UUID uuidOrganizer, long idEvent, RegisterEventDTO registerEventDTO){
         Optional<Event> event = eventRepository.findById(idEvent);
 
-        if (!organizerRepository.existsByUuid(uuid)){
+        if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
         if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
         }
-        if(!event.get().getOrganizer().getUuid().equals(uuid)){
+        if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para editar esse evento!");
         }
         if(registerEventDTO.getEventDate().isBefore(LocalDate.now())){
@@ -69,31 +69,31 @@ public class EventService {
         eventRepository.save(event.get());
     }
 
-    public void deleteEvent(UUID uuid, long idEvent){
+    public void deleteEvent(UUID uuidOrganizer, long idEvent){
         Optional<Event> event = eventRepository.findById(idEvent);
 
-        if (!organizerRepository.existsByUuid(uuid)){
+        if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
         if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
         }
-        if(!event.get().getOrganizer().getUuid().equals(uuid)){
+        if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para deletar esse evento!");
         }
 
         eventRepository.delete(event.get());
     }
 
-    public ResponseEventDTO findEventById(UUID uuid, Long idEvent){
+    public ResponseEventDTO findEventById(UUID uuidOrganizer, Long idEvent){
         Optional<Event> event = eventRepository.findById(idEvent);
-        if (!organizerRepository.existsByUuid(uuid)){
+        if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
         if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
         }
-        if(!event.get().getOrganizer().getUuid().equals(uuid)){
+        if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para visualizar esse evento!");
         }
         return new ResponseEventDTO(
@@ -106,9 +106,9 @@ public class EventService {
         );
     }
 
-    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuid){
-        List<Event> events = eventRepository.findAllByOrganizerUuid(uuid);
-        if (!organizerRepository.existsByUuid(uuid)){
+    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuidOrganizer){
+        List<Event> events = eventRepository.findAllByOrganizerUuid(uuidOrganizer);
+        if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
         if(events.isEmpty()){
@@ -125,9 +125,9 @@ public class EventService {
                 )).toList();
     }
 
-    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuid, StatusEventEnum status){
-        List<Event> events = eventRepository.findAllByOrganizerUuidAndStatus(uuid, status);
-        if (!organizerRepository.existsByUuid(uuid)){
+    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuidOrganizer, StatusEventEnum status){
+        List<Event> events = eventRepository.findAllByOrganizerUuidAndStatus(uuidOrganizer, status);
+        if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
         if(events.isEmpty()){
@@ -158,5 +158,44 @@ public class EventService {
                         e.getAmountOfSubscribers(),
                         e.getStatus()
                 )).toList();
+    }
+
+    public void subscribeForAnEvent(UUID uuidParticipant, Long idEvent){
+        Optional<Event> event = eventRepository.findById(idEvent);
+        Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
+
+        if(participant.isEmpty()){
+            throw new UserNotFoundException("Usuário participante não encontrado");
+        }
+        if(event.isEmpty()){
+            throw new EventNotFoundException("Evento não encontrado!");
+        }
+        if(event.get().getLimitParticipants() == event.get().getAmountOfSubscribers()){
+            throw new EventRegistrationLimitException("Esse evento já atingiu o número máximo de participantes");
+        }
+
+        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() + 1);
+        event.get().getParticipants().add(participant.get());
+        participant.get().getEvents().add(event.get());
+        eventRepository.save(event.get());
+        participantRepository.save(participant.get());
+    }
+
+    public void cancelSubscribeForAnEvent(UUID uuidParticipant, Long idEvent){
+        Optional<Event> event = eventRepository.findById(idEvent);
+        Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
+
+        if(participant.isEmpty()){
+            throw new UserNotFoundException("Usuário participante não encontrado");
+        }
+        if(event.isEmpty()){
+            throw new EventNotFoundException("Evento não encontrado!");
+        }
+
+        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
+        event.get().getParticipants().remove(participant.get());
+        participant.get().getEvents().remove(event.get());
+        eventRepository.save(event.get());
+        participantRepository.save(participant.get());
     }
 }

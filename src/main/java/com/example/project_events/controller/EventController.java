@@ -24,25 +24,25 @@ public class EventController {
 
     private final EventFacade eventFacade;
 
-    @PostMapping("/{uuid}/register")
-    public ResponseEntity<?> registerEvent(@PathVariable UUID uuid, @RequestBody @Valid RegisterEventDTO registerEventDTO){
-        eventFacade.createEvent(uuid, registerEventDTO);
+    @PostMapping("/{uuidOrganizer}/register")
+    public ResponseEntity<?> registerEvent(@PathVariable UUID uuidOrganizer, @RequestBody @Valid RegisterEventDTO registerEventDTO){
+        eventFacade.createEvent(uuidOrganizer, registerEventDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Evento criado com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/{uuid}/{idEvent}/update")
-    public ResponseEntity<?> updateEvent(@PathVariable UUID uuid, @PathVariable Long idEvent, @RequestBody @Valid RegisterEventDTO registerEventDTO){
-        eventFacade.updateEvent(uuid, idEvent, registerEventDTO);
+    @PutMapping("/{uuidOrganizer}/{idEvent}/update")
+    public ResponseEntity<?> updateEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent, @RequestBody @Valid RegisterEventDTO registerEventDTO){
+        eventFacade.updateEvent(uuidOrganizer, idEvent, registerEventDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Evento atualizado com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{uuid}/{idEvent}/delete")
-    public ResponseEntity<?> deleteEvent(@PathVariable UUID uuid, @PathVariable Long idEvent){
-        eventFacade.deleteEvent(uuid, idEvent);
+    @DeleteMapping("/{uuidOrganizer}/{idEvent}/delete")
+    public ResponseEntity<?> deleteEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent){
+        eventFacade.deleteEvent(uuidOrganizer, idEvent);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Evento deletado com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -57,26 +57,44 @@ public class EventController {
     }
 
     @Operation(summary = "Retorna um evento especifico")
-    @GetMapping("/{uuid}/{idEvent}/find-by-id")
-    public ResponseEntity<?> findEventById(@PathVariable UUID uuid, @PathVariable Long idEvent){
+    @GetMapping("/{uuidOrganizer}/{idEvent}/find-by-id")
+    public ResponseEntity<?> findEventById(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent){
         Map<String, ResponseEventDTO> response = new HashMap<>();
-        response.put("event", eventFacade.findEventById(uuid, idEvent));
+        response.put("event", eventFacade.findEventById(uuidOrganizer, idEvent));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Retorna todos os registros de eventos criados por um determinado organizador")
-    @GetMapping("/{uuid}/find-by-organizer")
-    public ResponseEntity<?> findAllEventsByOrganizer(@PathVariable UUID uuid){
+    @GetMapping("/{uuidOrganizer}/find-by-organizer")
+    public ResponseEntity<?> findAllEventsByOrganizer(@PathVariable UUID uuidOrganizer){
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
-        response.put("events", eventFacade.findAllEventsByOrganizer(uuid));
+        response.put("events", eventFacade.findAllEventsByOrganizer(uuidOrganizer));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Retorna todos os registros de eventos de um organizador especifico filtrados pelo status")
-    @GetMapping("/{uuid}/find-by-status")
-    public ResponseEntity<?> findEventsStatusByOrganizer(@PathVariable UUID uuid, @RequestParam StatusEventEnum status){
+    @GetMapping("/{uuidOrganizer}/find-by-status")
+    public ResponseEntity<?> findEventsStatusByOrganizer(@PathVariable UUID uuidOrganizer, @RequestParam StatusEventEnum status){
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
-        response.put("events", eventFacade.findEventsByOrganizerUuidAndStatus(uuid, status));
+        response.put("events", eventFacade.findEventsByOrganizerUuidAndStatus(uuidOrganizer, status));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Realizar inscrição de um participante em um evento")
+    @PostMapping("/{uuidParticipant}/{idEvent}/subscribe")
+    public ResponseEntity<?> subscribeForAnEvent(@PathVariable UUID uuidParticipant, @PathVariable Long idEvent){
+        eventFacade.subscribeForAnEvent(uuidParticipant, idEvent);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Inscrição realizada com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Cancelar inscrição de um participante em um evento")
+    @DeleteMapping("/{uuidParticipant}/{idEvent}/cancel-inscription")
+    public ResponseEntity<?> cancelSubscribeForAnEvent(@PathVariable UUID uuidParticipant, @PathVariable Long idEvent){
+        eventFacade.cancelSubscribeForAnEvent(uuidParticipant, idEvent);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Inscrição cancelada com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

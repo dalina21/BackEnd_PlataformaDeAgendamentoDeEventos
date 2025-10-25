@@ -1,5 +1,6 @@
 package com.example.project_events.controller;
 
+import com.example.project_events.dto.CreateParticipantDTO;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.facade.UserFacade;
@@ -19,6 +20,14 @@ import java.util.UUID;
 public class ParticipantController {
 
     private final UserFacade userFacade;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> createParticipant(@RequestBody @Valid CreateParticipantDTO createParticipantDTO){
+        userFacade.createUserParticipant(createParticipantDTO);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Usuário participante criado com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @GetMapping("/{uuid}/informations")
     public ResponseEntity<?> participantInformation(@PathVariable UUID uuid){
