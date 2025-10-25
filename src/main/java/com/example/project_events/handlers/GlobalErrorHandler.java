@@ -73,4 +73,11 @@ public class GlobalErrorHandler {
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(EventRegistrationLimitException.class)
+    public ResponseEntity<?> handlerEventRegistrationLimitException(EventRegistrationLimitException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.project_events.service;
 
+import com.example.project_events.dto.CreateParticipantDTO;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.errors.EmailExistingException;
@@ -20,6 +21,18 @@ public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
     private final BCryptPasswordEncoder encoder;
+
+    public void createParticipant(CreateParticipantDTO createParticipantDTO){
+        if(participantRepository.existsByEmail(createParticipantDTO.getEmail())){
+            throw new EmailExistingException("Já existe um participante cadastrado com esse email!");
+        }
+
+        Participant participant = new Participant();
+        participant.setName(createParticipantDTO.getName());
+        participant.setPassword(encoder.encode(createParticipantDTO.getPassword()));
+        participant.setEmail(createParticipantDTO.getEmail());
+        participantRepository.save(participant);
+    }
 
     public void updateParticipantInformations(UUID uuid, UpdateUserDTO updateUserDTO){
         Optional<Participant> participant = participantRepository.findByUuid(uuid);

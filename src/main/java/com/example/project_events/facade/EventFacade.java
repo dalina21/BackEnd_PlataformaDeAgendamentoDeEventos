@@ -17,31 +17,39 @@ public class EventFacade {
 
     private final EventService eventService;
 
-    public void createEvent(UUID uuid, RegisterEventDTO registerEventDTO){
-        eventService.registerEvent(uuid, registerEventDTO);
+    public void createEvent(UUID uuidOrganizer, RegisterEventDTO registerEventDTO){
+        eventService.registerEvent(uuidOrganizer, registerEventDTO);
     }
 
-    public void updateEvent(UUID uuid, Long idEvent, RegisterEventDTO registerEventDTO){
-        eventService.updateEvent(uuid, idEvent, registerEventDTO);
+    public void updateEvent(UUID uuidOrganizer, Long idEvent, RegisterEventDTO registerEventDTO){
+        eventService.updateEvent(uuidOrganizer, idEvent, registerEventDTO);
     }
 
-    public void deleteEvent(UUID uuid, Long idEvent){
-        eventService.deleteEvent(uuid, idEvent);
+    public void deleteEvent(UUID uuidOrganizer, Long idEvent){
+        eventService.deleteEvent(uuidOrganizer, idEvent);
     }
 
-    public ResponseEventDTO findEventById(UUID uuid, Long idEvent){
-        return eventService.findEventById(uuid, idEvent);
+    public ResponseEventDTO findEventById(UUID uuidOrganizer, Long idEvent){
+        return eventService.findEventById(uuidOrganizer, idEvent);
     }
 
     public List<ResponseEventDTO> findAllEvents(){
         return eventService.findAllEvents();
     }
 
-    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuid){
-        return eventService.findAllEventsByOrganizer(uuid);
+    public List<ResponseEventDTO> findAllEventsByOrganizer(UUID uuidOrganizer){
+        return eventService.findAllEventsByOrganizer(uuidOrganizer);
     }
 
-    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuid, StatusEventEnum status){
-        return eventService.findEventsByOrganizerUuidAndStatus(uuid, status);
+    public List<ResponseEventDTO> findEventsByOrganizerUuidAndStatus(UUID uuidOrganizer, StatusEventEnum status){
+        return eventService.findEventsByOrganizerUuidAndStatus(uuidOrganizer, status);
+    }
+
+    public void subscribeForAnEvent(UUID uuidParticipant, Long idEvent){
+        eventService.subscribeForAnEvent(uuidParticipant, idEvent);
+    }
+
+    public void cancelSubscribeForAnEvent(UUID uuidParticipant, Long idEvent){
+        eventService.cancelSubscribeForAnEvent(uuidParticipant, idEvent);
     }
 }
