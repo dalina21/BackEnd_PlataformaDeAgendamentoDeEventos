@@ -1,9 +1,11 @@
 package com.example.project_events.controller;
 
 import com.example.project_events.dto.CreateParticipantDTO;
+import com.example.project_events.dto.ResponseEventDTO;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.facade.UserFacade;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +28,7 @@ public class ParticipantController {
     public ResponseEntity<?> createParticipant(@RequestBody @Valid CreateParticipantDTO createParticipantDTO){
         userFacade.createUserParticipant(createParticipantDTO);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Usuário participante criado com sucesso!");
+        response.put("message", "Usuário participante cadastrado com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

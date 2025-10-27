@@ -2,8 +2,8 @@ package com.example.project_events.facade;
 
 import com.example.project_events.dto.RegisterEventDTO;
 import com.example.project_events.dto.ResponseEventDTO;
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.enums.StatusEventEnum;
-import com.example.project_events.model.Event;
 import com.example.project_events.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -63,5 +63,9 @@ public class EventFacade {
 
     public List<ResponseEventDTO> findAllEventsThatTheParticipantIsSubscribe(UUID uuidParticipant){
         return eventService.findAllEventsThatTheParticipantIsSubscribe(uuidParticipant);
+    }
+
+    public List<ResponseUserDTO> listParticipantsOfAnEvent(UUID uuidOrganizer, Long idEvent){
+        return eventService.listParticipantsOfAnEvent(uuidOrganizer, idEvent);
     }
 }

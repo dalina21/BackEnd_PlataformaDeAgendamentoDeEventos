@@ -47,8 +47,7 @@ public class OrganizerService {
         }
         return new ResponseUserDTO(
                 organizer.get().getName(),
-                organizer.get().getEmail(),
-                organizer.get().getPassword()
+                organizer.get().getEmail()
         );
     }
 }

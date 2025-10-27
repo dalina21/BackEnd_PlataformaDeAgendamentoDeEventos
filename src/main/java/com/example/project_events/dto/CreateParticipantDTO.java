@@ -15,7 +15,7 @@ public class CreateParticipantDTO {
     @NotBlank(message = "O campo do email é obrigatório!")
     private String email;
 
-    @NotBlank(message = "O campo da nova senha é obrigatório")
-    @Size(min = 8, message = "O campo da nova senha deve ter no minimo 8 carcteres")
+    @NotBlank(message = "O campo da senha é obrigatório")
+    @Size(min = 8, message = "O campo da senha deve ter no minimo 8 carcteres")
     private String password;
 }
