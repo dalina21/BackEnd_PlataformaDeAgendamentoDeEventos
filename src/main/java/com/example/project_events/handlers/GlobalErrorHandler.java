@@ -94,4 +94,18 @@ public class GlobalErrorHandler {
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(RegisteredParticipantException.class)
+    public ResponseEntity<?> handlerRegisteredParticipantException(RegisteredParticipantException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EventUnavailableException.class)
+    public ResponseEntity<?> handlerEventUnavailableException(EventUnavailableException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 }

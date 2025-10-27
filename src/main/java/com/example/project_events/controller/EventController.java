@@ -2,6 +2,7 @@ package com.example.project_events.controller;
 
 import com.example.project_events.dto.RegisterEventDTO;
 import com.example.project_events.dto.ResponseEventDTO;
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.facade.EventFacade;
 import com.example.project_events.model.Event;
@@ -122,6 +123,15 @@ public class EventController {
         List<ResponseEventDTO> events = eventFacade.findAllEventsThatTheParticipantIsSubscribe(uuidParticipant);
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
         response.put("events subscribed", events);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retorna todos os participantes inscritos em um evento especifico")
+    @GetMapping("/{uuidOrganizer}/{idEvent}/participants-subscribes")
+    public ResponseEntity<?> listParticipantsOfAnEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent){
+        List<ResponseUserDTO> participants = eventFacade.listParticipantsOfAnEvent(uuidOrganizer, idEvent);
+        Map<String, List<ResponseUserDTO>> response = new HashMap<>();
+        response.put("participants subscribed", participants);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
