@@ -26,7 +26,7 @@ public class Event {
     private int amountOfSubscribers;
 
     @ManyToOne
-    @JoinColumn(name = "organizer_id")
+    @JoinColumn(name = "organizer_uuid")
     private Organizer organizer;
 
     @OneToMany(mappedBy = "event")

@@ -80,4 +80,11 @@ public class GlobalErrorHandler {
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<?> handlerPostNotFoundException(PostNotFoundException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

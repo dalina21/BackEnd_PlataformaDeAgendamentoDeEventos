@@ -44,6 +44,9 @@ public class EventService {
         newEvent.setStatus(StatusEventEnum.AVAILABLE);
         newEvent.setOrganizer(organizer.get());
         eventRepository.save(newEvent);
+
+        organizer.get().getEvents().add(newEvent);
+        organizerRepository.save(organizer.get());
     }
 
     public void updateEvent(UUID uuidOrganizer, long idEvent, RegisterEventDTO registerEventDTO){
@@ -177,6 +180,7 @@ public class EventService {
         event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() + 1);
         event.get().getParticipants().add(participant.get());
         participant.get().getEvents().add(event.get());
+        participant.get().getPosts().addAll(event.get().getPosts());
         eventRepository.save(event.get());
         participantRepository.save(participant.get());
     }
@@ -195,6 +199,7 @@ public class EventService {
         event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
         event.get().getParticipants().remove(participant.get());
         participant.get().getEvents().remove(event.get());
+        participant.get().getPosts().removeAll(event.get().getPosts());
         eventRepository.save(event.get());
         participantRepository.save(participant.get());
     }
