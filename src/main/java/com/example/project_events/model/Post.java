@@ -19,7 +19,7 @@ public class Post {
     private LocalDate postingDate;
 
     @ManyToOne
-    @JoinColumn(name = "organizer_id")
+    @JoinColumn(name = "organizer_uuid")
     private Organizer organizer;
 
     @ManyToOne

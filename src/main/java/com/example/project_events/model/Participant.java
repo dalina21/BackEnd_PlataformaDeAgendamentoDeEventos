@@ -25,12 +25,12 @@ public class Participant {
     @ManyToMany
     @JoinTable(
             name = "participate_event",
-            joinColumns = @JoinColumn(name = "participant_id"),inverseJoinColumns = @JoinColumn(name = "event_id"))
+            joinColumns = @JoinColumn(name = "participant_uuid"),inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
 
     @ManyToMany
     @JoinTable(
             name = "view_posts",
-            joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
+            joinColumns = @JoinColumn(name = "participant_uuid"), inverseJoinColumns = @JoinColumn(name = "post_id"))
     private List<Post> posts;
 }
