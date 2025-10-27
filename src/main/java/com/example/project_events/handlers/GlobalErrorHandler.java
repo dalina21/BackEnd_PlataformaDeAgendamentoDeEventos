@@ -87,4 +87,11 @@ public class GlobalErrorHandler {
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(SubscriberNotFoundException.class)
+    public ResponseEntity<?> handlerSubscriberNotFoundException(SubscriberNotFoundException e){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

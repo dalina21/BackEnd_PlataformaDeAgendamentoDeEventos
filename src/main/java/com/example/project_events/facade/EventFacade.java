@@ -52,4 +52,16 @@ public class EventFacade {
     public void cancelSubscribeForAnEvent(UUID uuidParticipant, Long idEvent){
         eventService.cancelSubscribeForAnEvent(uuidParticipant, idEvent);
     }
+
+    public List<ResponseEventDTO> findAllEventsAvailableForSubscribe(UUID uuidParticipant){
+        return eventService.findAllEventsAvailableForSubscribe(uuidParticipant);
+    }
+
+    public List<ResponseEventDTO> findAllOngoingEvents(UUID uuidParticipant){
+        return eventService.findAllOngoingEvents(uuidParticipant);
+    }
+
+    public List<ResponseEventDTO> findAllEventsThatTheParticipantIsSubscribe(UUID uuidParticipant){
+        return eventService.findAllEventsThatTheParticipantIsSubscribe(uuidParticipant);
+    }
 }
