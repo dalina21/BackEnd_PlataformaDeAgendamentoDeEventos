@@ -97,4 +97,31 @@ public class EventController {
         response.put("message", "Inscrição cancelada com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @Operation(summary = "Retorna todos os eventos que estão dispiniveis para a inscrição")
+    @GetMapping("/{uuidParticipant}/available-events")
+    public ResponseEntity<?> findAllEventsAvailableForSubscribe(@PathVariable UUID uuidParticipant){
+        List<ResponseEventDTO> events = eventFacade.findAllEventsAvailableForSubscribe(uuidParticipant);
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
+        response.put("available events", events);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retorna todos os eventos que estão em andamento")
+    @GetMapping("/{uuidParticipant}/ongoing-events")
+    public ResponseEntity<?> findAllOngoingEvents(@PathVariable UUID uuidParticipant){
+        List<ResponseEventDTO> events = eventFacade.findAllOngoingEvents(uuidParticipant);
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
+        response.put("ongoing events", events);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retorna todos os eventos em que um participante especifico está inscrito")
+    @GetMapping("/{uuidParticipant}/events-subscribed")
+    public ResponseEntity<?> findAllEventsThatTheParticipantIsSubscribe(@PathVariable UUID uuidParticipant){
+        List<ResponseEventDTO> events = eventFacade.findAllEventsThatTheParticipantIsSubscribe(uuidParticipant);
+        Map<String, List<ResponseEventDTO>> response = new HashMap<>();
+        response.put("events subscribed", events);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

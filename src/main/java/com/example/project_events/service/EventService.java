@@ -203,4 +203,67 @@ public class EventService {
         eventRepository.save(event.get());
         participantRepository.save(participant.get());
     }
+
+    public List<ResponseEventDTO> findAllEventsAvailableForSubscribe(UUID uuidParticipant){
+        List<Event> events = eventRepository.findAllByStatus(StatusEventEnum.AVAILABLE);
+
+        if(!participantRepository.existsByUuid(uuidParticipant)){
+            throw new UserNotFoundException("Usuário participante não encontrado");
+        }
+        if(events.isEmpty()){
+            throw new EventNotFoundException("Nenhum evento disponível encontrado!");
+        }
+
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
+    }
+
+    public List<ResponseEventDTO> findAllOngoingEvents(UUID uuidParticipant){
+        List<Event> events = eventRepository.findAllByStatus(StatusEventEnum.IN_PROGRESS);
+
+        if(!participantRepository.existsByUuid(uuidParticipant)){
+            throw new UserNotFoundException("Usuário participante não encontrado");
+        }
+        if(events.isEmpty()){
+            throw new EventNotFoundException("Nenhum evento disponível encontrado!");
+        }
+
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
+    }
+
+    public List<ResponseEventDTO> findAllEventsThatTheParticipantIsSubscribe(UUID uuidParticipant){
+        List<Event> events = eventRepository.findAllByParticipants_Uuid(uuidParticipant);
+
+        if(participantRepository.existsByUuid(uuidParticipant)){
+            throw new UserNotFoundException("Usuário participante não encontrado!");
+        }
+        if(events.isEmpty()){
+            throw new SubscriberNotFoundException("Não foi encontrado nenhuma incrição desse participante em um evento!");
+        }
+
+        return events.stream()
+                .map(e -> new ResponseEventDTO(
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEventDate(),
+                        e.getLimitParticipants(),
+                        e.getAmountOfSubscribers(),
+                        e.getStatus()
+                )).toList();
+    }
 }
