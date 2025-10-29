@@ -28,9 +28,6 @@ public class Participant {
             joinColumns = @JoinColumn(name = "participant_uuid"),inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
 
-    @ManyToMany
-    @JoinTable(
-            name = "view_posts",
-            joinColumns = @JoinColumn(name = "participant_uuid"), inverseJoinColumns = @JoinColumn(name = "post_id"))
+    @ManyToMany(mappedBy = "participants")
     private List<Post> posts;
 }

@@ -38,7 +38,7 @@ public class PostController {
     }
 
     @Operation(summary = "Retorna os posts de um organizador em um evento especifico")
-    @GetMapping("/{uuidOrganizer}/{idEvent}")
+    @GetMapping("/organizer/{uuidOrganizer}/{idEvent}")
     public ResponseEntity<?> findAllByOrganizerUuuidAndEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent){
         List<ResponsePostDTO> posts = postFacade.findAllByOrganizerUuuidAndEvent(uuidOrganizer, idEvent);
         Map<String, List<ResponsePostDTO>> response = new HashMap<>();
@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @Operation(summary = "Retorna os posts que um participante pode visualizar em um evento especifico")
-    @GetMapping("/{uuidParticipant}/{idEvent}")
+    @GetMapping("/participant/{uuidParticipant}/{idEvent}")
     public ResponseEntity<?> findAllByParticipantUuidAndEvent(@PathVariable UUID uuidParticipant, @PathVariable Long idEvent){
         List<ResponsePostDTO> posts = postFacade.findAllByParticipantUuidAndEvent(uuidParticipant, idEvent);
         Map<String, List<ResponsePostDTO>> response = new HashMap<>();

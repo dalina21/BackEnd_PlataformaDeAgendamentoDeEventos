@@ -56,76 +56,19 @@ public class ParticipantService {
         participantRepository.save(participant.get());
     }
 
-    public ResponseUserDTO participantInformation(UUID uuid){
-        Optional<Participant> participant = participantRepository.findByUuid(uuid);
+    public int viewNotificationCounter(UUID uuidParticipant){
+        Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
         if(participant.isEmpty()){
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }
-        return new ResponseUserDTO(
-                participant.get().getName(),
-                participant.get().getEmail()
-        );
+        return participant.get().getCounterNotification();
     }
 
-    public void subscribeForAnEvent(UUID uuidParticipant, Long idEvent){
-        Optional<Event> event = eventRepository.findById(idEvent);
+    public void resetNotificationCounter(UUID uuidParticipant){
         Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
-
         if(participant.isEmpty()){
-            throw new UserNotFoundException("Usuário participante não encontrado");
-        }
-        if(event.isEmpty()){
-            throw new EventNotFoundException("Evento não encontrado!");
-        }
-        if(event.get().getLimitParticipants() == event.get().getAmountOfSubscribers()){
-            throw new EventRegistrationLimitException("Esse evento já atingiu o número máximo de participantes");
-        }
-
-        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() + 1);
-        event.get().getParticipants().add(participant.get());
-        participant.get().getEvents().add(event.get());
-        participant.get().getPosts().addAll(event.get().getPosts());
-        eventRepository.save(event.get());
-        participantRepository.save(participant.get());
-    }
-
-    public void cancelSubscribeForAnEvent(UUID uuidParticipant, Long idEvent){
-        Optional<Event> event = eventRepository.findById(idEvent);
-        Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
-
-        if(participant.isEmpty()){
-            throw new UserNotFoundException("Usuário participante não encontrado");
-        }
-        if(event.isEmpty()){
-            throw new EventNotFoundException("Evento não encontrado!");
-        }
-
-        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
-        event.get().getParticipants().remove(participant.get());
-        participant.get().getEvents().remove(event.get());
-        participant.get().getPosts().removeAll(event.get().getPosts());
-        eventRepository.save(event.get());
-        participantRepository.save(participant.get());
-    }
-
-    public List<ResponseEventDTO> findAllEventsThatTheParticipantIsSubscribe(UUID uuidParticipant){
-        List<Event> events = eventRepository.findAllByParticipants_Uuid(uuidParticipant);
-
-        if(participantRepository.existsByUuid(uuidParticipant)){
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }
-        if(events.isEmpty()){
-            throw new SubscriberNotFoundException("Não foi encontrado nenhuma incrição desse participante em um evento!");
-        }
-
-        return events.stream()
-                .map(e -> new ResponseEventDTO(
-                        e.getName(),
-                        e.getDescription(),
-                        e.getEventDate(),
-                        e.getLimitParticipants(),
-                        e.getAmountOfSubscribers(),
-                        e.getStatus()
-                )).toList();
+        participant.get().setCounterNotification(0);
     }
 }

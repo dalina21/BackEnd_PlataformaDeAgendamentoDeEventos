@@ -65,7 +65,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retorna todos os registros de eventos criados por um determinado organizador")
+    @Operation(summary = "Retorna todos os registros de eventos criados por um organizador")
     @GetMapping("/{uuidOrganizer}/find-by-organizer")
     public ResponseEntity<?> findAllEventsByOrganizer(@PathVariable UUID uuidOrganizer){
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
@@ -73,7 +73,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retorna todos os registros de eventos de um organizador especifico filtrados pelo status")
+    @Operation(summary = "Retorna todos os registros de eventos de um organizador filtrados pelo status")
     @GetMapping("/{uuidOrganizer}/find-by-status")
     public ResponseEntity<?> findEventsStatusByOrganizer(@PathVariable UUID uuidOrganizer, @RequestParam StatusEventEnum status){
         Map<String, List<ResponseEventDTO>> response = new HashMap<>();
@@ -81,7 +81,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Realizar inscrição de um participante em um evento")
+    @Operation(summary = "Realiza inscrição de um participante em um evento")
     @PostMapping("/{uuidParticipant}/{idEvent}/subscribe")
     public ResponseEntity<?> subscribeForAnEvent(@PathVariable UUID uuidParticipant, @PathVariable Long idEvent){
         eventFacade.subscribeForAnEvent(uuidParticipant, idEvent);
@@ -90,7 +90,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Cancelar inscrição de um participante em um evento")
+    @Operation(summary = "Cancela inscrição de um participante em um evento")
     @DeleteMapping("/{uuidParticipant}/{idEvent}/cancel-inscription")
     public ResponseEntity<?> cancelSubscribeForAnEvent(@PathVariable UUID uuidParticipant, @PathVariable Long idEvent){
         eventFacade.cancelSubscribeForAnEvent(uuidParticipant, idEvent);
@@ -117,7 +117,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retorna todos os eventos em que um participante especifico está inscrito")
+    @Operation(summary = "Retorna todos os eventos em que um participante está inscrito")
     @GetMapping("/{uuidParticipant}/events-subscribed")
     public ResponseEntity<?> findAllEventsThatTheParticipantIsSubscribe(@PathVariable UUID uuidParticipant){
         List<ResponseEventDTO> events = eventFacade.findAllEventsThatTheParticipantIsSubscribe(uuidParticipant);
@@ -126,7 +126,7 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retorna todos os participantes inscritos em um evento especifico")
+    @Operation(summary = "Retorna todos os participantes inscritos em um evento")
     @GetMapping("/{uuidOrganizer}/{idEvent}/participants-subscribes")
     public ResponseEntity<?> listParticipantsOfAnEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent){
         List<ResponseUserDTO> participants = eventFacade.listParticipantsOfAnEvent(uuidOrganizer, idEvent);

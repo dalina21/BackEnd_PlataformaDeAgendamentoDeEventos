@@ -29,12 +29,16 @@ public class UserFacade {
         participantService.updateParticipantInformations(uuid, updateUserDTO);
     }
 
-    public ResponseUserDTO participantInformation(UUID uuid){
-        return participantService.participantInformation(uuid);
-    }
-
     public void createUserParticipant(CreateParticipantDTO createParticipantDTO){
         participantService.createParticipant(createParticipantDTO);
+    }
+
+    public int viewNotificationCounter(UUID uuidParticipant){
+        return participantService.viewNotificationCounter(uuidParticipant);
+    }
+
+    public void resetNotificationCounter(UUID uuidParticipant){
+        participantService.resetNotificationCounter(uuidParticipant);
     }
 }
 
