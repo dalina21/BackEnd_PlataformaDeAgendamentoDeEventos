@@ -46,6 +46,7 @@ public class OrganizerService {
             throw new UserNotFoundException("Usuário organizador não encontrado!");
         }
         return new ResponseUserDTO(
+                organizer.get().getUuid(),
                 organizer.get().getName(),
                 organizer.get().getEmail()
         );

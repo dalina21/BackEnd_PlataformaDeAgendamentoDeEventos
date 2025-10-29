@@ -8,6 +8,7 @@ import com.example.project_events.errors.UnauthorizedException;
 import com.example.project_events.errors.UuidNotFoundException;
 import com.example.project_events.model.Event;
 import com.example.project_events.model.Organizer;
+import com.example.project_events.model.Participant;
 import com.example.project_events.model.Post;
 import com.example.project_events.repository.EventRepository;
 import com.example.project_events.repository.OrganizerRepository;
@@ -30,6 +31,19 @@ public class PostService {
     private final ParticipantRepository participantRepository;
     private final EventRepository eventRepository;
 
+    private void incrementNotificationsOfOnePost(Long postId){
+        Optional<Post> post = postRepository.findById(postId);
+        if(post.isEmpty()){
+            throw new PostNotFoundException("Post não encontrado!");
+        }
+
+        for (Participant p : post.get().getParticipants()){
+            p.setCounterNotification(p.getCounterNotification() + 1);
+        }
+
+        participantRepository.saveAll(post.get().getParticipants());
+    }
+
     public void createPost(UUID uuidOrganizer, Long idEvent, CreatePostDTO createPostDTO){
         Optional<Organizer> organizer = organizerRepository.findByUuid(uuidOrganizer);
         Optional<Event> event = eventRepository.findById(idEvent);
@@ -51,6 +65,8 @@ public class PostService {
         post.setEvent(event.get());
         post.getParticipants().addAll(event.get().getParticipants());
         postRepository.save(post);
+
+        incrementNotificationsOfOnePost(post.getId());
     }
 
     public void deletePost(UUID uuidOrganizer, Long idPost){

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,9 @@ public class Post {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @ManyToMany(mappedBy = "posts")
-    private List<Participant> participants;
+    @ManyToMany
+    @JoinTable(
+            name = "view_posts",
+            joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "participant_uuid"))
+    private List<Participant> participants = new ArrayList<>();
 }

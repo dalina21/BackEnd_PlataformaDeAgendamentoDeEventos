@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class ResponseEventDTO {
+    private long id;
     private String name;
     private String description;
     private LocalDate eventDate;
