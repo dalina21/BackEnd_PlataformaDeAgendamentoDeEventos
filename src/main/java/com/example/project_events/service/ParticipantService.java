@@ -1,8 +1,10 @@
 package com.example.project_events.service;
 
 import com.example.project_events.dto.CreateParticipantDTO;
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.errors.*;
+import com.example.project_events.model.Organizer;
 import com.example.project_events.model.Participant;
 import com.example.project_events.repository.EventRepository;
 import com.example.project_events.repository.ParticipantRepository;
@@ -39,7 +41,7 @@ public class ParticipantService {
         if(participant.isEmpty()){
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }
-        if(participantRepository.existsByEmail(updateUserDTO.getEmail())){
+        if(participantRepository.existsByEmailAndUuidNot(updateUserDTO.getEmail(), uuid)){
             throw new EmailExistingException("Já existe um participante cadastrado com esse email!");
         }
         if(!encoder.matches(updateUserDTO.getOldPassword(), participant.get().getPassword())){
@@ -66,5 +68,16 @@ public class ParticipantService {
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }
         participant.get().setCounterNotification(0);
+    }
+
+    public ResponseUserDTO participantInformation(UUID uuid){
+        Optional<Participant> participant = participantRepository.findByUuid(uuid);
+        if(participant.isEmpty()){
+            throw new UserNotFoundException("Usuário participante não encontrado!");
+        }
+        return new ResponseUserDTO(
+                participant.get().getName(),
+                participant.get().getEmail()
+        );
     }
 }

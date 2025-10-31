@@ -1,5 +1,6 @@
 package com.example.project_events.controller;
 
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.facade.UserFacade;
@@ -22,7 +23,7 @@ public class OrganizerController {
 
     @GetMapping("/{uuid}/informations")
     public ResponseEntity<?> organizerInformation(@PathVariable UUID uuid){
-        Map<String, ResponseUserLoginDTO> response = new HashMap<>();
+        Map<String, ResponseUserDTO> response = new HashMap<>();
         response.put("organizer", userFacade.organizerInformation(uuid));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

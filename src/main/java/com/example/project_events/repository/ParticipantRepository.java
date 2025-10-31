@@ -16,5 +16,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, UUID> 
     Optional<Participant> findByUuid(UUID uuid);
     List<Participant> findAllByEvents_id(long idEvent);
     boolean existsByEmail(String email);
+    boolean existsByEmailAndUuidNot(String email, UUID uuid);
     boolean existsByUuid(UUID uuid);
 }

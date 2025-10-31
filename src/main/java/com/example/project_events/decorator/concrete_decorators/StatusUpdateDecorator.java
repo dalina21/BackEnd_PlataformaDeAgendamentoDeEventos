@@ -28,11 +28,17 @@ public class StatusUpdateDecorator extends EventSearchDecorator {
         }
         if(event.get().getLimitParticipants() == event.get().getAmountOfSubscribers()){
             event.get().setStatus(StatusEventEnum.UNAVAILABLE);
-        } else if(LocalDate.now().equals(event.get().getEventDate())){
+        }
+        if(LocalDate.now().equals(event.get().getEventDate())){
             event.get().setStatus(StatusEventEnum.IN_PROGRESS);
-        } else if(event.get().getEventDate().isBefore(LocalDate.now())){
+        }
+        if(event.get().getEventDate().isBefore(LocalDate.now())){
             event.get().setStatus(StatusEventEnum.COMPLETED);
-        } else {
+        }
+        if(event.get().getLimitParticipants() > event.get().getAmountOfSubscribers() &&
+                !LocalDate.now().equals(event.get().getEventDate()) &&
+                !event.get().getEventDate().isBefore(LocalDate.now())
+        ){
             event.get().setStatus(StatusEventEnum.AVAILABLE);
         }
         eventRepository.save(event.get());

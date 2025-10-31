@@ -1,6 +1,7 @@
 package com.example.project_events.facade;
 
 import com.example.project_events.dto.CreateParticipantDTO;
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.service.OrganizerService;
@@ -21,7 +22,7 @@ public class UserFacade {
         organizerService.updateOrganizerInformations(uuid, updateUserDTO);
     }
 
-    public ResponseUserLoginDTO organizerInformation(UUID uuid){
+    public ResponseUserDTO organizerInformation(UUID uuid){
         return organizerService.organizerInformation(uuid);
     }
 
@@ -39,6 +40,10 @@ public class UserFacade {
 
     public void resetNotificationCounter(UUID uuidParticipant){
         participantService.resetNotificationCounter(uuidParticipant);
+    }
+
+    public ResponseUserDTO participantInformation(UUID uuid){
+        return participantService.participantInformation(uuid);
     }
 }
 
