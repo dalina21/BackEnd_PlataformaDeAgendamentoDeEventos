@@ -42,8 +42,17 @@ public class EventSearchBaseComponent implements IEventSearchComponent {
     }
 
     @Override
+    public List<Event> findAllEvents() {
+        List<Event> events = eventRepository.findAll();
+        if(events.isEmpty()){
+            throw new EventNotFoundException("Nenhum evento encontrado!");
+        }
+        return events;
+    }
+
+    @Override
     public List<Event> findEventsByOrganizerUuidAndStatus(UUID uuidOrganizer, StatusEventEnum status) {
-        List<Event> events = eventRepository.findAllByOrganizerUuidAndStatus(uuidOrganizer, status);
+        List<Event> events = eventRepository.findAllByOrganizerUuid(uuidOrganizer);
         if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("UUID não encontrado");
         }
@@ -54,18 +63,8 @@ public class EventSearchBaseComponent implements IEventSearchComponent {
     }
 
     @Override
-    public List<Event> findAllEvents() {
-        List<Event> events = eventRepository.findAll();
-        if(events.isEmpty()){
-            throw new EventNotFoundException("Nenhum evento encontrado!");
-        }
-        return events;
-    }
-
-    @Override
     public List<Event> findAllEventsAvailableForSubscribe(UUID uuidParticipant) {
         List<Event> events = eventRepository.findAllByStatus(StatusEventEnum.AVAILABLE);
-
         if(!participantRepository.existsByUuid(uuidParticipant)){
             throw new UserNotFoundException("Usuário participante não encontrado");
         }
@@ -78,7 +77,6 @@ public class EventSearchBaseComponent implements IEventSearchComponent {
     @Override
     public List<Event> findAllOngoingEvents(UUID uuidParticipant) {
         List<Event> events = eventRepository.findAllByStatus(StatusEventEnum.IN_PROGRESS);
-
         if(!participantRepository.existsByUuid(uuidParticipant)){
             throw new UserNotFoundException("Usuário participante não encontrado");
         }
@@ -91,7 +89,6 @@ public class EventSearchBaseComponent implements IEventSearchComponent {
     @Override
     public List<Event> findAllEventsThatTheParticipantIsSubscribe(UUID uuidParticipant) {
         List<Event> events = eventRepository.findAllByParticipants_Uuid(uuidParticipant);
-
         if(!participantRepository.existsByUuid(uuidParticipant)){
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }

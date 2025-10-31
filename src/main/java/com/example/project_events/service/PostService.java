@@ -44,6 +44,8 @@ public class PostService {
         participantRepository.saveAll(post.get().getParticipants());
     }
 
+
+
     public void createPost(UUID uuidOrganizer, Long idEvent, CreatePostDTO createPostDTO){
         Optional<Organizer> organizer = organizerRepository.findByUuid(uuidOrganizer);
         Optional<Event> event = eventRepository.findById(idEvent);
@@ -88,6 +90,7 @@ public class PostService {
 
     public List<ResponsePostDTO> findAllByOrganizerUuuidAndEvent(UUID uuidOrganizer, Long idEvent){
         List<Post> posts = postRepository.findAllByOrganizer_UuidAndEvent_Id(uuidOrganizer, idEvent);
+        Optional<Event> event = eventRepository.findById(idEvent);
 
         if (!organizerRepository.existsByUuid(uuidOrganizer)){
             throw new UuidNotFoundException("Uuid do organizador não encontrado!");
@@ -95,18 +98,19 @@ public class PostService {
         if(posts.isEmpty()){
             throw new PostNotFoundException("Nenhuma postagem nesse evento foi encontrada!");
         }
-        if(!eventRepository.existsById(idEvent)){
+        if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
         }
-        if(!eventRepository.findById(idEvent).get().getOrganizer().getUuid().equals(uuidOrganizer)){
+        if(event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para vizualizar as postagens desse evento");
         }
 
         return posts.stream()
                 .map(p -> new ResponsePostDTO(
-                      p.getMessage(),
-                      p.getPostingDate(),
-                      p.getOrganizer().getName()
+                        p.getId(),
+                        p.getMessage(),
+                        p.getPostingDate(),
+                        p.getOrganizer().getName()
                 )).toList();
     }
 
@@ -125,6 +129,7 @@ public class PostService {
 
         return posts.stream()
                 .map(p -> new ResponsePostDTO(
+                        p.getId(),
                         p.getMessage(),
                         p.getPostingDate(),
                         p.getOrganizer().getName()

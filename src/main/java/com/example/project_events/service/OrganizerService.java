@@ -1,6 +1,6 @@
 package com.example.project_events.service;
 
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.errors.EmailExistingException;
 import com.example.project_events.errors.InvalidCredentialsException;
@@ -40,12 +40,12 @@ public class OrganizerService {
         organizerRepository.save(organizer.get());
     }
 
-    public ResponseUserDTO organizerInformation(UUID uuid){
+    public ResponseUserLoginDTO organizerInformation(UUID uuid){
         Optional<Organizer> organizer = organizerRepository.findByUuid(uuid);
         if(organizer.isEmpty()){
             throw new UserNotFoundException("Usuário organizador não encontrado!");
         }
-        return new ResponseUserDTO(
+        return new ResponseUserLoginDTO(
                 organizer.get().getUuid(),
                 organizer.get().getName(),
                 organizer.get().getEmail()

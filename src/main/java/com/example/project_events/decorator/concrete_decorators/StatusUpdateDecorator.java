@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class StatusUpdateDecorator extends EventSearchDecorator {
 
@@ -20,10 +21,10 @@ public class StatusUpdateDecorator extends EventSearchDecorator {
         this.eventRepository = eventRepository;
     }
 
-    public void updateEventStatus(Long idEvent){
+    private void updateEventStatus(Long idEvent){
         Optional<Event> event = eventRepository.findById(idEvent);
         if(event.isEmpty()){
-            throw new EventNotFoundException("Evento não encotrado!");
+            throw new EventNotFoundException("Evento não encontrado!");
         }
         if(event.get().getLimitParticipants() == event.get().getAmountOfSubscribers()){
             event.get().setStatus(StatusEventEnum.UNAVAILABLE);
@@ -63,7 +64,10 @@ public class StatusUpdateDecorator extends EventSearchDecorator {
     @Override
     public List<Event> findEventsByOrganizerUuidAndStatus(UUID uuidOrganizer, StatusEventEnum status) {
         List<Event> events = super.findEventsByOrganizerUuidAndStatus(uuidOrganizer, status);
-        return applyStatusUpdateToEvents(events);
+        applyStatusUpdateToEvents(events);
+        return events.stream()
+                .filter(e -> e.getStatus() == status)
+                .collect(Collectors.toList());
     }
 
     @Override

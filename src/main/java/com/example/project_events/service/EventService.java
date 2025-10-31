@@ -1,9 +1,7 @@
 package com.example.project_events.service;
 
 import com.example.project_events.decorator.component.IEventSearchComponent;
-import com.example.project_events.dto.RegisterEventDTO;
-import com.example.project_events.dto.ResponseEventDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.*;
 import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.errors.*;
 import com.example.project_events.model.Event;
@@ -12,8 +10,10 @@ import com.example.project_events.model.Participant;
 import com.example.project_events.repository.EventRepository;
 import com.example.project_events.repository.OrganizerRepository;
 import com.example.project_events.repository.ParticipantRepository;
+import com.example.project_events.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +27,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final OrganizerRepository organizerRepository;
     private final ParticipantRepository participantRepository;
+    private final PostRepository postRepository;
     private final IEventSearchComponent eventSearchComponent;
 
     public void registerEvent(UUID uuidOrganizer, RegisterEventDTO registerEventDTO){
@@ -52,7 +53,7 @@ public class EventService {
         organizerRepository.save(organizer.get());
     }
 
-    public void updateEvent(UUID uuidOrganizer, long idEvent, RegisterEventDTO registerEventDTO){
+    public void updateEvent(UUID uuidOrganizer, long idEvent, UpdateEventDTO updateEventDTO){
 
         Optional<Event> event = eventRepository.findById(idEvent);
 
@@ -65,17 +66,13 @@ public class EventService {
         if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para editar esse evento!");
         }
-        if(registerEventDTO.getEventDate().isBefore(LocalDate.now())){
-            throw new InvalidDateException("Datas no passado não são permitidas para editar um evento!");
-        }
 
-        event.get().setName(registerEventDTO.getName());
-        event.get().setDescription(registerEventDTO.getDescription());
-        event.get().setEventDate(registerEventDTO.getEventDate());
-        event.get().setLimitParticipants(registerEventDTO.getLimitParticipants());
+        event.get().setName(updateEventDTO.getName());
+        event.get().setDescription(updateEventDTO.getDescription());
         eventRepository.save(event.get());
     }
 
+    @Transactional
     public void deleteEvent(UUID uuidOrganizer, long idEvent){
         Optional<Event> event = eventRepository.findById(idEvent);
 
@@ -89,6 +86,10 @@ public class EventService {
             throw new UnauthorizedException("Este organizador não tem permissão para deletar esse evento!");
         }
 
+        participantRepository.findAllByEvents_id(idEvent)
+                .forEach(participant -> participant.getEvents().remove(event.get()));
+
+        postRepository.deleteAllByEvent(event.get());
         eventRepository.delete(event.get());
     }
 
@@ -96,6 +97,9 @@ public class EventService {
         Optional<Event> event = eventSearchComponent.findEventById(idEvent);
         if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
+        }
+        if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
+            throw new UnauthorizedException("Este organizador não tem permissão para visualizar esse evento!");
         }
         return new ResponseEventDTO(
                 event.get().getId(),
@@ -150,6 +154,7 @@ public class EventService {
                 )).toList();
     }
 
+    @Transactional
     public void subscribeForAnEvent(UUID uuidParticipant, Long idEvent){
         Optional<Event> event = eventSearchComponent.findEventById(idEvent);
         Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
@@ -161,7 +166,7 @@ public class EventService {
             throw new EventNotFoundException("Evento não encontrado!");
         }
         if(!event.get().getStatus().equals(StatusEventEnum.AVAILABLE)){
-            throw new EventUnavailableException("Este evento não se encontra disponível para a inscrição!");
+            throw new InvalidEventStatusException("Este evento não se encontra disponível para a inscrição!");
         }
         if(event.get().getParticipants().contains(participant.get())){
             throw new RegisteredParticipantException("Este participante já se encontra inscrito nesse evento!");
@@ -171,10 +176,15 @@ public class EventService {
         event.get().getParticipants().add(participant.get());
         participant.get().getEvents().add(event.get());
         participant.get().getPosts().addAll(event.get().getPosts());
+
+        postRepository.findAllByOrganizer_UuidAndEvent_Id(event.get().getOrganizer().getUuid(), idEvent)
+                        .forEach(post -> post.getParticipants().add(participant.get()));
+
         eventRepository.save(event.get());
         participantRepository.save(participant.get());
     }
 
+    @Transactional
     public void cancelSubscribeForAnEvent(UUID uuidParticipant, Long idEvent){
         Optional<Event> event = eventSearchComponent.findEventById(idEvent);
         Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
@@ -189,10 +199,18 @@ public class EventService {
             throw new SubscriberNotFoundException("Não foi encontrada nenhuma inscrição desse participante nesse evento!");
         }
 
+        if(event.get().getStatus().equals(StatusEventEnum.IN_PROGRESS) || event.get().getStatus().equals(StatusEventEnum.COMPLETED)){
+            throw new InvalidEventStatusException("Não é possivel cancelar inscrição em um evento em andamento ou que já foi concluido!");
+        }
+
         event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
         event.get().getParticipants().remove(participant.get());
         participant.get().getEvents().remove(event.get());
         participant.get().getPosts().removeAll(event.get().getPosts());
+
+        postRepository.findAllByParticipants_UuidAndEvent_Id(uuidParticipant, idEvent)
+                .forEach(post -> post.getParticipants().remove(participant.get()));
+
         eventRepository.save(event.get());
         participantRepository.save(participant.get());
     }
@@ -257,7 +275,6 @@ public class EventService {
 
         return event.get().getParticipants().stream()
                 .map(p -> new ResponseUserDTO(
-                        p.getUuid(),
                         p.getName(),
                         p.getEmail()
                 )).toList();

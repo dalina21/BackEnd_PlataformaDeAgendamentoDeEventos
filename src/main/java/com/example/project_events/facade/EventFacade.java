@@ -1,8 +1,6 @@
 package com.example.project_events.facade;
 
-import com.example.project_events.dto.RegisterEventDTO;
-import com.example.project_events.dto.ResponseEventDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.*;
 import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +19,8 @@ public class EventFacade {
         eventService.registerEvent(uuidOrganizer, registerEventDTO);
     }
 
-    public void updateEvent(UUID uuidOrganizer, Long idEvent, RegisterEventDTO registerEventDTO){
-        eventService.updateEvent(uuidOrganizer, idEvent, registerEventDTO);
+    public void updateEvent(UUID uuidOrganizer, Long idEvent, UpdateEventDTO updateEventDTO){
+        eventService.updateEvent(uuidOrganizer, idEvent, updateEventDTO);
     }
 
     public void deleteEvent(UUID uuidOrganizer, Long idEvent){

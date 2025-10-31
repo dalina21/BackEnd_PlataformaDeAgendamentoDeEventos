@@ -1,11 +1,8 @@
 package com.example.project_events.controller;
 
-import com.example.project_events.dto.RegisterEventDTO;
-import com.example.project_events.dto.ResponseEventDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.*;
 import com.example.project_events.enums.StatusEventEnum;
 import com.example.project_events.facade.EventFacade;
-import com.example.project_events.model.Event;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +31,8 @@ public class EventController {
     }
 
     @PutMapping("/{uuidOrganizer}/{idEvent}/update")
-    public ResponseEntity<?> updateEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent, @RequestBody @Valid RegisterEventDTO registerEventDTO){
-        eventFacade.updateEvent(uuidOrganizer, idEvent, registerEventDTO);
+    public ResponseEntity<?> updateEvent(@PathVariable UUID uuidOrganizer, @PathVariable Long idEvent, @RequestBody @Valid UpdateEventDTO updateEventDTO){
+        eventFacade.updateEvent(uuidOrganizer, idEvent, updateEventDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Evento atualizado com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);

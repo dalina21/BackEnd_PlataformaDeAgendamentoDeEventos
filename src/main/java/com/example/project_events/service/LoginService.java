@@ -1,7 +1,7 @@
 package com.example.project_events.service;
 
 import com.example.project_events.dto.LoginDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.errors.InvalidCredentialsException;
 import com.example.project_events.model.Organizer;
 import com.example.project_events.model.Participant;
@@ -21,24 +21,24 @@ public class LoginService {
     private final ParticipantRepository participantRepository;
     private final BCryptPasswordEncoder encoder;
 
-    public ResponseUserDTO loginOrganizer(LoginDTO loginDTO){
+    public ResponseUserLoginDTO loginOrganizer(LoginDTO loginDTO){
         Optional<Organizer> organizer = organizerRepository.findByEmail(loginDTO.getEmail());
         if(organizer.isEmpty() || !encoder.matches(loginDTO.getPassword(), organizer.get().getPassword())){
             throw new InvalidCredentialsException("Credenciais Inválidas!");
         }
-        return new ResponseUserDTO(
+        return new ResponseUserLoginDTO(
                 organizer.get().getUuid(),
                 organizer.get().getName(),
                 organizer.get().getEmail()
         );
     }
 
-    public ResponseUserDTO loginParticipant(LoginDTO loginDTO){
+    public ResponseUserLoginDTO loginParticipant(LoginDTO loginDTO){
         Optional<Participant> participant = participantRepository.findByEmail(loginDTO.getEmail());
         if(participant.isEmpty() || !encoder.matches(loginDTO.getPassword(), participant.get().getPassword())){
             throw new InvalidCredentialsException("Credenciais Inválidas!");
         }
-        return new ResponseUserDTO(
+        return new ResponseUserLoginDTO(
                 participant.get().getUuid(),
                 participant.get().getName(),
                 participant.get().getEmail()
