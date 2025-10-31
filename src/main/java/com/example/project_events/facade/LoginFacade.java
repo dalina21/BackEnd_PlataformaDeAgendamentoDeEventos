@@ -1,9 +1,7 @@
 package com.example.project_events.facade;
 
 import com.example.project_events.dto.LoginDTO;
-import com.example.project_events.dto.ResponseUserDTO;
-import com.example.project_events.model.Organizer;
-import com.example.project_events.model.Participant;
+import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,11 +12,11 @@ public class LoginFacade {
 
     private final LoginService loginService;
 
-    public ResponseUserDTO loginOrganizer(LoginDTO loginDTO){
+    public ResponseUserLoginDTO loginOrganizer(LoginDTO loginDTO){
         return loginService.loginOrganizer(loginDTO);
     }
 
-    public ResponseUserDTO loginParticipant(LoginDTO loginDTO){
+    public ResponseUserLoginDTO loginParticipant(LoginDTO loginDTO){
         return loginService.loginParticipant(loginDTO);
     }
 

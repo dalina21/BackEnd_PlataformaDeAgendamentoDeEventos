@@ -1,7 +1,7 @@
 package com.example.project_events.controller;
 
 import com.example.project_events.dto.LoginDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.facade.LoginFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/login")
@@ -24,15 +23,15 @@ public class LoginController {
 
     @PostMapping("/organizer")
     public ResponseEntity<?> loginOrganizer(@RequestBody @Valid LoginDTO loginDTO){
-        Map<String, ResponseUserDTO> response = new HashMap<>();
-        response.put("uuid", loginFacade.loginOrganizer(loginDTO));
+        Map<String, ResponseUserLoginDTO> response = new HashMap<>();
+        response.put("organizer", loginFacade.loginOrganizer(loginDTO));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/participant")
     public ResponseEntity<?> loginParticipant(@RequestBody @Valid LoginDTO loginDTO){
-        Map<String, ResponseUserDTO> response = new HashMap<>();
-        response.put("uuid", loginFacade.loginParticipant(loginDTO));
+        Map<String, ResponseUserLoginDTO> response = new HashMap<>();
+        response.put("participant", loginFacade.loginParticipant(loginDTO));
         return ResponseEntity.ok(response);
     }
 }

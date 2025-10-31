@@ -1,11 +1,8 @@
 package com.example.project_events.service;
 
 import com.example.project_events.dto.CreateParticipantDTO;
-import com.example.project_events.dto.ResponseEventDTO;
-import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.errors.*;
-import com.example.project_events.model.Event;
 import com.example.project_events.model.Participant;
 import com.example.project_events.repository.EventRepository;
 import com.example.project_events.repository.ParticipantRepository;
@@ -13,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -102,8 +102,8 @@ public class GlobalErrorHandler {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(EventUnavailableException.class)
-    public ResponseEntity<?> handlerEventUnavailableException(EventUnavailableException e){
+    @ExceptionHandler(InvalidEventStatusException.class)
+    public ResponseEntity<?> handlerEventUnavailableException(InvalidEventStatusException e){
         Map<String, String> response = new HashMap<>();
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);

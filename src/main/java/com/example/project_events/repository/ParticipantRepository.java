@@ -14,6 +14,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, UUID> 
     Participant save(Participant participant);
     Optional<Participant> findByEmail(String email);
     Optional<Participant> findByUuid(UUID uuid);
+    List<Participant> findAllByEvents_id(long idEvent);
     boolean existsByEmail(String email);
     boolean existsByUuid(UUID uuid);
 }

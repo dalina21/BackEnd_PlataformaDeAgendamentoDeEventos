@@ -15,7 +15,7 @@ public class SortNumberOfSubscribersDecorator extends EventSearchDecorator {
     }
 
     private List<Event> applySort(List<Event> events){
-        events.sort(Comparator.comparingInt(Event::getAmountOfSubscribers).reversed());
+        events.sort(Comparator.comparing((Event e) -> e.getAmountOfSubscribers()).reversed());
         return events;
     }
 

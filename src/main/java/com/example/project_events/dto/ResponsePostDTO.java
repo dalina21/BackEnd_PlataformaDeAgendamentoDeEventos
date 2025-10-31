@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class ResponsePostDTO {
+    private long idPost;
     private String message;
     private LocalDate postingDate;
     private String nameOrganizer;

@@ -1,7 +1,7 @@
 package com.example.project_events.facade;
 
 import com.example.project_events.dto.CreateParticipantDTO;
-import com.example.project_events.dto.ResponseUserDTO;
+import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.service.OrganizerService;
 import com.example.project_events.service.ParticipantService;
@@ -21,7 +21,7 @@ public class UserFacade {
         organizerService.updateOrganizerInformations(uuid, updateUserDTO);
     }
 
-    public ResponseUserDTO organizerInformation(UUID uuid){
+    public ResponseUserLoginDTO organizerInformation(UUID uuid){
         return organizerService.organizerInformation(uuid);
     }
 
