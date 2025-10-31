@@ -13,5 +13,6 @@ public interface OrganizerRepository extends JpaRepository<Organizer, UUID> {
     Optional<Organizer> findByUuid(UUID uuid);
     Optional<Organizer> findByEmail(String email);
     boolean existsByEmail(String email);
+    boolean existsByEmailAndUuidNot(String email, UUID uuid);
     boolean existsByUuid(UUID uuid);
 }

@@ -1,6 +1,7 @@
 package com.example.project_events.controller;
 
 import com.example.project_events.dto.CreateParticipantDTO;
+import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
 import com.example.project_events.facade.UserFacade;
 import jakarta.validation.Valid;
@@ -33,6 +34,13 @@ public class ParticipantController {
         userFacade.updateParticipantInformations(uuid, updateUserDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Participante atualizado com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{uuid}/informations")
+    public ResponseEntity<?> participantInformation(@PathVariable UUID uuid){
+        Map<String, ResponseUserDTO> response = new HashMap<>();
+        response.put("organizer", userFacade.participantInformation(uuid));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
