@@ -173,6 +173,11 @@ public class EventService {
         }
 
         event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() + 1);
+
+        if(event.get().getAmountOfSubscribers() == event.get().getLimitParticipants()){
+            event.get().setStatus(StatusEventEnum.UNAVAILABLE);
+        }
+
         event.get().getParticipants().add(participant.get());
         participant.get().getEvents().add(event.get());
         participant.get().getPosts().addAll(event.get().getPosts());
@@ -199,11 +204,15 @@ public class EventService {
             throw new SubscriberNotFoundException("Não foi encontrada nenhuma inscrição desse participante nesse evento!");
         }
 
-        if(event.get().getStatus().equals(StatusEventEnum.IN_PROGRESS) || event.get().getStatus().equals(StatusEventEnum.COMPLETED)){
-            throw new InvalidEventStatusException("Não é possivel cancelar inscrição em um evento em andamento ou que já foi concluido!");
+        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
+
+        if(event.get().getLimitParticipants() > event.get().getAmountOfSubscribers() &&
+                !LocalDate.now().equals(event.get().getEventDate()) &&
+                !event.get().getEventDate().isBefore(LocalDate.now())
+        ){
+            event.get().setStatus(StatusEventEnum.AVAILABLE);
         }
 
-        event.get().setAmountOfSubscribers(event.get().getAmountOfSubscribers() - 1);
         event.get().getParticipants().remove(participant.get());
         participant.get().getEvents().remove(event.get());
         participant.get().getPosts().removeAll(event.get().getPosts());
