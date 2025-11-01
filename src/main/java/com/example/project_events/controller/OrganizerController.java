@@ -3,6 +3,7 @@ package com.example.project_events.controller;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.dto.UpdateUserPasswordDTO;
 import com.example.project_events.facade.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,14 @@ public class OrganizerController {
         userFacade.updateOrganizerInformations(uuid, updateUserDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Organizador atualizado com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{uuid}/update-password")
+    public ResponseEntity<?> updateOrganizerPassword(@PathVariable UUID uuid, @RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
+        userFacade.updateOrganizerPassword(uuid, updateUserPasswordDTO);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Senha do organizador atualizada com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

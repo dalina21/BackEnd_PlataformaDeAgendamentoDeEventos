@@ -3,6 +3,7 @@ package com.example.project_events.service;
 import com.example.project_events.dto.CreateParticipantDTO;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.dto.UpdateUserPasswordDTO;
 import com.example.project_events.errors.*;
 import com.example.project_events.model.Organizer;
 import com.example.project_events.model.Participant;
@@ -44,13 +45,23 @@ public class ParticipantService {
         if(participantRepository.existsByEmailAndUuidNot(updateUserDTO.getEmail(), uuid)){
             throw new EmailExistingException("Já existe um participante cadastrado com esse email!");
         }
-        if(!encoder.matches(updateUserDTO.getOldPassword(), participant.get().getPassword())){
-            throw new InvalidCredentialsException("Senha atual incorreta!");
-        }
 
         participant.get().setName(updateUserDTO.getName());
         participant.get().setEmail(updateUserDTO.getEmail());
-        participant.get().setPassword(encoder.encode(updateUserDTO.getNewPassword()));
+        participantRepository.save(participant.get());
+    }
+
+    public void updateParticipantPassword(UUID uuid, UpdateUserPasswordDTO updateUserPasswordDTO){
+        Optional<Participant> participant = participantRepository.findByUuid(uuid);
+
+        if(participant.isEmpty()){
+            throw new UserNotFoundException("Usuário participante não encontrado!");
+        }
+        if(!encoder.matches(updateUserPasswordDTO.getOldPassword(), participant.get().getPassword())){
+            throw new InvalidCredentialsException("Senha atual incorreta!");
+        }
+
+        participant.get().setPassword(encoder.encode(updateUserPasswordDTO.getNewPassword()));
         participantRepository.save(participant.get());
     }
 

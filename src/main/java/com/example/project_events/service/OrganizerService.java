@@ -3,6 +3,7 @@ package com.example.project_events.service;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.ResponseUserLoginDTO;
 import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.dto.UpdateUserPasswordDTO;
 import com.example.project_events.errors.EmailExistingException;
 import com.example.project_events.errors.InvalidCredentialsException;
 import com.example.project_events.errors.UserNotFoundException;
@@ -31,13 +32,23 @@ public class OrganizerService {
         if(organizerRepository.existsByEmailAndUuidNot(updateUserDTO.getEmail(), uuid)){
             throw new EmailExistingException("Já existe um organizador cadastrado com esse email!");
         }
-        if(!encoder.matches(updateUserDTO.getOldPassword(), organizer.get().getPassword())){
-            throw new InvalidCredentialsException("Senha atual incorreta!");
-        }
 
         organizer.get().setName(updateUserDTO.getName());
         organizer.get().setEmail(updateUserDTO.getEmail());
-        organizer.get().setPassword(encoder.encode(updateUserDTO.getNewPassword()));
+        organizerRepository.save(organizer.get());
+    }
+
+    public void updateOrganizerPassword(UUID uuid, UpdateUserPasswordDTO updateUserPasswordDTO){
+        Optional<Organizer> organizer = organizerRepository.findByUuid(uuid);
+
+        if(organizer.isEmpty()){
+            throw new UserNotFoundException("Usuário organizador não encontrado!");
+        }
+        if(!encoder.matches(updateUserPasswordDTO.getOldPassword(), organizer.get().getPassword())){
+            throw new InvalidCredentialsException("Senha atual incorreta!");
+        }
+
+        organizer.get().setPassword(encoder.encode(updateUserPasswordDTO.getNewPassword()));
         organizerRepository.save(organizer.get());
     }
 
