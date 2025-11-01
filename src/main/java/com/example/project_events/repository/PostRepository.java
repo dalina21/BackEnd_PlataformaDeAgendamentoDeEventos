@@ -17,4 +17,5 @@ public interface PostRepository extends JpaRepository<Post, Long>{
     void deleteAllByEvent(Event event);
     List<Post> findAllByOrganizer_UuidAndEvent_Id(UUID uuidOrganizer, long idEvent);
     List<Post> findAllByParticipants_UuidAndEvent_Id(UUID uuidParticipant, long idEvent);
+    List<Post> findAllByParticipants_Uuid(UUID uuidParticipant);
 }

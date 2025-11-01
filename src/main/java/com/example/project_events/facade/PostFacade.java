@@ -30,4 +30,8 @@ public class PostFacade {
     public List<ResponsePostDTO> findAllByParticipantUuidAndEvent(UUID uuidParticipant, Long idEvent){
         return postService.findAllByParticipantUuidAndEvent(uuidParticipant, idEvent);
     }
+
+    public List<ResponsePostDTO> findAllByParticipantsUuid(UUID uuidParticipant){
+        return postService.findAllByParticipantsUuid(uuidParticipant);
+    }
 }

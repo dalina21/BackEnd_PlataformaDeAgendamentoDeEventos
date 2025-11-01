@@ -137,4 +137,22 @@ public class PostService {
                         p.getOrganizer().getName()
                 )).toList();
     }
+
+    public List<ResponsePostDTO> findAllByParticipantsUuid(UUID uuidParticipant){
+        List<Post> posts = postRepository.findAllByParticipants_Uuid(uuidParticipant);
+        if (!participantRepository.existsByUuid(uuidParticipant)){
+            throw new UuidNotFoundException("Uuid do participante não encontrado!");
+        }
+        if(posts.isEmpty()){
+            throw new PostNotFoundException("Nenhuma postagem vinculada a esse participante foi encontrada!");
+        }
+        return posts.stream()
+                .map(p -> new ResponsePostDTO(
+                        p.getId(),
+                        p.getMessage(),
+                        p.getPostingDate(),
+                        p.getOrganizer().getName()
+                )).toList();
+    }
+
 }
