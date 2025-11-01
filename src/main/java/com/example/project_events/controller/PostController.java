@@ -54,4 +54,13 @@ public class PostController {
         response.put("posts", posts);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @Operation(summary = "Retorna os posts dos eventos que um participante está inscrito")
+    @GetMapping("/participant/{uuidParticipant}")
+    public ResponseEntity<?> findAllByParticipantUuid(@PathVariable UUID uuidParticipant){
+        List<ResponsePostDTO> posts = postFacade.findAllByParticipantsUuid(uuidParticipant);
+        Map<String, List<ResponsePostDTO>> response = new HashMap<>();
+        response.put("posts", posts);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
