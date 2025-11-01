@@ -2,10 +2,7 @@ package com.example.project_events.service;
 
 import com.example.project_events.dto.CreatePostDTO;
 import com.example.project_events.dto.ResponsePostDTO;
-import com.example.project_events.errors.EventNotFoundException;
-import com.example.project_events.errors.PostNotFoundException;
-import com.example.project_events.errors.UnauthorizedException;
-import com.example.project_events.errors.UuidNotFoundException;
+import com.example.project_events.errors.*;
 import com.example.project_events.model.Event;
 import com.example.project_events.model.Organizer;
 import com.example.project_events.model.Participant;
@@ -101,7 +98,7 @@ public class PostService {
         if(event.isEmpty()){
             throw new EventNotFoundException("Evento não encontrado!");
         }
-        if(event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
+        if(!event.get().getOrganizer().getUuid().equals(uuidOrganizer)){
             throw new UnauthorizedException("Este organizador não tem permissão para vizualizar as postagens desse evento");
         }
 
@@ -116,15 +113,20 @@ public class PostService {
 
     public List<ResponsePostDTO> findAllByParticipantUuidAndEvent(UUID uuidParticipant, Long idEvent){
         List<Post> posts = postRepository.findAllByParticipants_UuidAndEvent_Id(uuidParticipant, idEvent);
+        Optional<Participant> participant = participantRepository.findByUuid(uuidParticipant);
+        Optional<Event> event = eventRepository.findById(idEvent);
 
-        if (!participantRepository.existsById(uuidParticipant)){
+        if (participant.isEmpty()){
             throw new UuidNotFoundException("Uuid do participante não encontrado!");
+        }
+        if(event.isEmpty()){
+            throw new EventNotFoundException("Evento não encontrado!");
+        }
+        if(!event.get().getParticipants().contains(participant.get())){
+            throw new UnauthorizedException("Esse participante não tem permissão para visualizar as postagens desse evento!");
         }
         if(posts.isEmpty()){
             throw new PostNotFoundException("Nenhuma postagem nesse evento foi encontrada!");
-        }
-        if(!eventRepository.existsById(idEvent)){
-            throw new EventNotFoundException("Evento não encontrado!");
         }
 
         return posts.stream()
