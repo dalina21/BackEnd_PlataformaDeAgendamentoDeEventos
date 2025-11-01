@@ -14,12 +14,4 @@ public class UpdateUserDTO {
     @Email(message = "Formato de email inválido!")
     @NotBlank(message = "O campo do email é obrigatório!")
     private String email;
-
-    @NotBlank(message = "O campo da antiga senha é obrigatório")
-    @Size(min = 8, message = "O campo da antiga senha deve ter no minimo 8 carcteres")
-    private String oldPassword;
-
-    @NotBlank(message = "O campo da nova senha é obrigatório")
-    @Size(min = 8, message = "O campo da nova senha deve ter no minimo 8 carcteres")
-    private String newPassword;
 }

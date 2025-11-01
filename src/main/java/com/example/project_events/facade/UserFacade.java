@@ -1,9 +1,6 @@
 package com.example.project_events.facade;
 
-import com.example.project_events.dto.CreateParticipantDTO;
-import com.example.project_events.dto.ResponseUserDTO;
-import com.example.project_events.dto.ResponseUserLoginDTO;
-import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.dto.*;
 import com.example.project_events.service.OrganizerService;
 import com.example.project_events.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +19,20 @@ public class UserFacade {
         organizerService.updateOrganizerInformations(uuid, updateUserDTO);
     }
 
+    public void updateOrganizerPassword(UUID uuid, UpdateUserPasswordDTO updateUserPasswordDTO){
+        organizerService.updateOrganizerPassword(uuid, updateUserPasswordDTO);
+    }
+
     public ResponseUserDTO organizerInformation(UUID uuid){
         return organizerService.organizerInformation(uuid);
     }
 
     public void updateParticipantInformations(UUID uuid, UpdateUserDTO updateUserDTO){
         participantService.updateParticipantInformations(uuid, updateUserDTO);
+    }
+
+    public void updateParticipantPassword(UUID uuid, UpdateUserPasswordDTO updateUserPasswordDTO){
+        participantService.updateParticipantPassword(uuid, updateUserPasswordDTO);
     }
 
     public void createUserParticipant(CreateParticipantDTO createParticipantDTO){

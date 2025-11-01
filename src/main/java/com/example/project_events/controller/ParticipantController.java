@@ -3,6 +3,7 @@ package com.example.project_events.controller;
 import com.example.project_events.dto.CreateParticipantDTO;
 import com.example.project_events.dto.ResponseUserDTO;
 import com.example.project_events.dto.UpdateUserDTO;
+import com.example.project_events.dto.UpdateUserPasswordDTO;
 import com.example.project_events.facade.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,14 @@ public class ParticipantController {
         userFacade.updateParticipantInformations(uuid, updateUserDTO);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Participante atualizado com sucesso!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{uuid}/update-password")
+    public ResponseEntity<?> updateParticipantPassword(@PathVariable UUID uuid, @RequestBody @Valid UpdateUserPasswordDTO updateUserPasswordDTO){
+        userFacade.updateParticipantPassword(uuid, updateUserPasswordDTO);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Senha do participante atualizada com sucesso!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
