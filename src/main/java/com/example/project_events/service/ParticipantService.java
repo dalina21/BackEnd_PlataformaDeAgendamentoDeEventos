@@ -79,6 +79,7 @@ public class ParticipantService {
             throw new UserNotFoundException("Usuário participante não encontrado!");
         }
         participant.get().setCounterNotification(0);
+        participantRepository.save(participant.get());
     }
 
     public ResponseUserDTO participantInformation(UUID uuid){
