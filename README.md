@@ -65,7 +65,7 @@ A comunicação é feita via HTTP utilizando padrões REST.
 - Senhas são armazenadas criptografadas
 - Integridade dos dados garantida via validações
 
-## Persistência de Dados
+### Persistência de Dados
 - Utilização de JPA com Hibernate
 - Mapeamento objeto-relacional (ORM)
 - Integração com PostgreSQL
